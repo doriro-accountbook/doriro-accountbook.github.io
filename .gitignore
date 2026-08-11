@@ -1,0 +1,7 @@
+node_modules/
+dist/
+# 실제 소비내역 — 공개 저장소라 커밋하지 않는다 (DB 적재용 원본은 로컬에만 둔다)
+data/
+*.local
+.DS_Store
+tsconfig.tsbuildinfo

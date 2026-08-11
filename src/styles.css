@@ -1,0 +1,147 @@
+/* 카드 가계부 — 다크 단일 테마 */
+:root {
+  --bg: #131312;
+  --panel: #1b1b19;
+  --line: #2b2b28;
+  --text: #c3c2b7;
+  --bright: #f2f1ea;
+  --dim: #8c8b81;
+  --accent: #3987e5;
+  --green: #4cba7f;
+  --red: #d1584c;
+}
+
+* { box-sizing: border-box; }
+html { color-scheme: dark; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.app { max-width: 1500px; margin: 0 auto; padding: 16px 16px 48px; }
+
+header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+.ym { display: flex; gap: 4px; align-items: center; }
+.ym input[type='month'] { width: 140px; text-align: center; }
+.ym button { padding: 7px 11px; }
+.ym .today { margin-left: 4px; }
+h1 { margin: 0; font-size: 22px; color: var(--bright); flex: 1; }
+.tools { display: flex; gap: 6px; }
+
+button {
+  padding: 8px 13px; font-size: 14px; color: var(--text);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+button:hover { border-color: var(--dim); }
+button:disabled { opacity: 0.4; cursor: default; }
+button.primary { color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 600; padding: 9px 20px; font-size: 15px; }
+button.ghost { padding: 2px 7px; font-size: 15px; background: none; border: none; color: var(--dim); }
+button.ghost:hover { color: var(--red); }
+button.cal { padding: 5px 9px; }
+
+input, select {
+  padding: 8px 10px; font-size: 15px; color: var(--bright);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+}
+input:focus, select:focus { outline: none; border-color: var(--accent); }
+input:disabled, select:disabled { opacity: 0.4; }
+
+/* ---------- 입력 폼 ---------- */
+.entry {
+  display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;
+  padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+  margin-bottom: 16px;
+}
+.entry label {
+  display: flex; flex-direction: column; gap: 5px;
+  font-size: 15px; text-align: center; color: var(--text);
+}
+.entry .grow { flex: 1; min-width: 180px; }
+.entry .grow input { width: 100%; }
+
+.date-wrap { display: flex; gap: 4px; align-items: center; position: relative; }
+.date-wrap input:not(.hidden-date) { width: 160px; }
+.hidden-date {
+  position: absolute; left: 0; bottom: 0; width: 1px; height: 1px;
+  opacity: 0; border: 0; padding: 0; pointer-events: none;
+}
+
+.won-wrap { position: relative; display: inline-flex; align-items: center; }
+.won-wrap input { width: 130px; padding-right: 28px; text-align: right; }
+.won-wrap .unit { position: absolute; right: 10px; font-size: 13px; color: var(--dim); pointer-events: none; }
+/* 자동 계산 결과라 입력 대상이 아님 — 값만 보여준다 */
+.won-wrap.readonly input { background: transparent; border-style: dashed; color: var(--accent); }
+
+.months-wrap { display: inline-flex; align-items: center; gap: 4px; }
+.months-wrap input { width: 56px; text-align: center; }
+
+/* ---------- 카드별 표 (국민 위 / 삼성 아래, 각각 스크롤) ---------- */
+.cards { display: flex; flex-direction: column; gap: 16px; }
+
+.card-box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.card-box h2 { margin: 0; padding: 11px 14px; font-size: 17px; color: var(--bright); border-bottom: 1px solid var(--line); }
+.card-box h2 .count { margin-left: 7px; font-size: 13px; font-weight: 400; color: var(--dim); }
+.card-box .scroll { max-height: 52vh; min-height: 120px; overflow: auto; }
+
+/* colgroup의 비율 폭을 그대로 쓰려면 fixed. 좁은 화면에선 min-width로 가로 스크롤 */
+table { width: 100%; min-width: 1260px; border-collapse: collapse; table-layout: fixed; font-size: 15px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); }
+/* 헤더는 가운데 정렬 + 한 줄 고정 (줄바꿈되면 컬럼이 좁다는 신호 — min-width로 스크롤) */
+th {
+  position: sticky; top: 0; z-index: 1;
+  text-align: center; white-space: nowrap;
+  background: var(--panel); font-size: 15px; font-weight: 500; color: var(--text);
+}
+/* 이름이 길면 자르지 말고 줄바꿈 */
+td { overflow-wrap: anywhere; }
+td.empty { padding: 30px 0; text-align: center; color: var(--dim); }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.center { text-align: center; }
+tr.inst td { background: rgba(57, 135, 229, 0.07); }
+/* 표 안의 편집칸 — 평소엔 글자처럼, 마우스를 올리거나 누를 때만 입력칸으로 보인다 */
+.cell {
+  width: 100%; padding: 4px 6px; font-size: 15px; color: var(--bright);
+  background: transparent; border: 1px solid transparent; border-radius: 6px;
+}
+.cell:hover { border-color: var(--line); }
+.cell:focus { outline: none; border-color: var(--accent); background: var(--bg); }
+.cell.mid { text-align: center; }
+.cell.right { text-align: right; }
+.cell.mon { width: 44px; text-align: center; }
+select.cell { appearance: none; text-align-last: center; cursor: pointer; }
+/* 달력 아이콘은 평소 흐리게 */
+input[type='date'].cell::-webkit-calendar-picker-indicator { opacity: 0.35; cursor: pointer; }
+input[type='date'].cell:hover::-webkit-calendar-picker-indicator { opacity: 0.8; }
+td .sub { display: block; margin-top: 2px; font-size: 12px; color: var(--dim); text-align: right; }
+
+.card-box footer {
+  display: flex; justify-content: flex-end; gap: 24px; flex-wrap: wrap;
+  padding: 11px 14px; font-size: 15px; border-top: 1px solid var(--line);
+}
+.card-box footer b, .grand b { color: var(--bright); font-variant-numeric: tabular-nums; }
+
+/* ---------- 월 합계 ---------- */
+.grand {
+  display: flex; justify-content: flex-end; gap: 28px; flex-wrap: wrap;
+  margin-top: 16px; padding: 14px 16px; font-size: 16px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+}
+.grand .real b { color: var(--green); font-size: 18px; }
+
+/* ---------- 로그인·로딩 화면 ---------- */
+.splash {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  min-height: 100vh; padding: 24px; text-align: center; color: var(--dim);
+}
+.splash h1 { flex: none; font-size: 24px; color: var(--bright); }
+.splash .err { margin: 0; color: var(--red); }
+.splash .sub { margin: 0; font-size: 13px; }
+
+/* ---------- 저장 상태 ---------- */
+.save { align-self: center; min-width: 52px; font-size: 13px; text-align: right; color: var(--dim); }
+.save.saved { color: var(--green); }
+.save.error { color: var(--red); }
