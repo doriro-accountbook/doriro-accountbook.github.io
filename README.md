@@ -1,6 +1,8 @@
 # 카드 가계부 (doriro-accountbook)
 
-카드 소비내역을 월 단위로 적는 **한 화면짜리 가계부**. 로그인 없음, 서버 없음 — 일단 브라우저(localStorage)에 저장한다.
+카드 소비내역을 월 단위로 적는 **한 화면짜리 가계부**. 구글 로그인 후 Supabase 에 저장한다 — 리로·도리가 같은 장부를 공유한다.
+
+**https://doriro-accountbook.github.io**
 
 ## 화면 구성
 
