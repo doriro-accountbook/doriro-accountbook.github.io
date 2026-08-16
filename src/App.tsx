@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent } from 'react';
 import { CARDS, OWNERS, type Book, type Card, type Entry, type Owner } from './engine/types';
 import {
-  cardTotal, companyTotal, depositTotal, ensureMonth, fmtComma, fmtWon, isYm, lumpTotal,
+  cardTotal, companyTotal, defaultCard, depositTotal, ensureMonth, fmtComma, fmtWon, isYm, lumpTotal,
   monthly, nextYm, pad2, parseDateInput, prevYm, todayIso, todayYm, toWon,
 } from './engine/logic';
 import { loadBook, saveBook } from './store/storage';
@@ -90,7 +90,8 @@ function Ledger({ initial, email }: { initial: Book; email: string }) {
   };
 
   // ---------- 입력 폼 ----------
-  const [card, setCard] = useState<Card>('국민카드');
+  // 로그인한 계정이 주로 쓰는 카드를 먼저 골라둔다 (바꿀 수 있다)
+  const [card, setCard] = useState<Card>(() => defaultCard(email));
   const [inst, setInst] = useState<'일시불' | '할부'>('일시불');
   const [dateStr, setDateStr] = useState(todayIso());
   const [merchant, setMerchant] = useState('');

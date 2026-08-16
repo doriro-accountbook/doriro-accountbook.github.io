@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
-  carryOver, cardTotal, companyTotal, depositTotal, ensureMonth, fmtComma, lumpTotal, monthly,
-  parseDateInput, prevYm, toWon,
+  carryOver, cardTotal, companyTotal, defaultCard, depositTotal, ensureMonth, fmtComma, lumpTotal,
+  monthly, parseDateInput, prevYm, toWon,
 } from './logic';
 import type { Book, Entry } from './types';
 
@@ -12,6 +12,19 @@ const makeId = () => {
 
 const entry = (p: Partial<Entry>): Entry => ({
   id: 'x', card: '국민카드', installment: false, merchant: '가맹점', amount: 10000, owner: '공통', deposit: 'N', ...p,
+});
+
+describe('계정별 기본 카드', () => {
+  it('등록된 계정은 그 계정의 카드', () => {
+    expect(defaultCard('park3650@gmail.com')).toBe('국민카드');
+  });
+  it('그 외 계정은 삼성카드', () => {
+    expect(defaultCard('someone@gmail.com')).toBe('삼성카드');
+    expect(defaultCard('')).toBe('삼성카드');
+  });
+  it('대소문자·앞뒤 공백은 무시한다', () => {
+    expect(defaultCard('  Park3650@Gmail.com ')).toBe('국민카드');
+  });
 });
 
 describe('parseDateInput', () => {

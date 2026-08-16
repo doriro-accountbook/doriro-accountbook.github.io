@@ -1,5 +1,15 @@
 // 순수 계산 로직 — UI·저장소에 의존하지 않는다.
-import type { Book, Entry } from './types';
+import type { Book, Card, Entry } from './types';
+
+/**
+ * 로그인 계정별로 입력 폼에 먼저 골라둘 카드.
+ * 각자 자기 카드를 주로 적으니 매번 고르지 않아도 되게 한다. 고정은 아니라 바꿀 수 있다.
+ */
+const CARD_BY_EMAIL: Record<string, Card> = {
+  'park3650@gmail.com': '국민카드',
+};
+export const defaultCard = (email: string): Card =>
+  CARD_BY_EMAIL[email.trim().toLowerCase()] ?? '삼성카드';
 
 export const pad2 = (n: number) => String(n).padStart(2, '0');
 export const ym = (y: number, m: number) => `${y}-${pad2(m)}`;
