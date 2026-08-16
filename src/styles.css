@@ -41,7 +41,6 @@ button:disabled { opacity: 0.4; cursor: default; }
 button.primary { color: #fff; background: var(--accent); border-color: var(--accent); font-weight: 600; padding: 9px 20px; font-size: 15px; }
 button.ghost { padding: 2px 7px; font-size: 15px; background: none; border: none; color: var(--dim); }
 button.ghost:hover { color: var(--red); }
-button.cal { padding: 5px 9px; }
 
 input, select {
   padding: 8px 10px; font-size: 15px; color: var(--bright);
@@ -63,11 +62,21 @@ input:disabled, select:disabled { opacity: 0.4; }
 .entry .grow { flex: 1; min-width: 180px; }
 .entry .grow input { width: 100%; }
 
-.date-wrap { display: flex; gap: 4px; align-items: center; position: relative; }
-.date-wrap input:not(.hidden-date) { width: 160px; }
-.hidden-date {
-  position: absolute; left: 0; bottom: 0; width: 1px; height: 1px;
-  opacity: 0; border: 0; padding: 0; pointer-events: none;
+.date-wrap { display: flex; gap: 4px; align-items: center; }
+.date-wrap > input { width: 160px; }
+/* 달력 버튼 — 아이콘 위에 date input을 투명하게 덮는다.
+   자바스크립트로 여는 대신 실제로 date input을 누르게 해야 모바일에서도 달력이 뜬다 */
+.cal {
+  position: relative; display: inline-flex; align-items: center; justify-content: center;
+  padding: 7px 10px; font-size: 15px;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+.cal:hover { border-color: var(--dim); }
+.cal:focus-within { border-color: var(--accent); }
+.cal input[type='date'] {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  margin: 0; padding: 0; border: 0; opacity: 0; cursor: pointer;
+  appearance: none; -webkit-appearance: none;
 }
 
 .won-wrap { position: relative; display: inline-flex; align-items: center; }

@@ -102,7 +102,6 @@ function Ledger({ initial, email }: { initial: Book; email: string }) {
   const [deposit, setDeposit] = useState<'Y' | 'N'>('N');
   const [depositAmt, setDepositAmt] = useState('');
   const [detail, setDetail] = useState('');
-  const dpRef = useRef<HTMLInputElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const personal = isPersonal(owner);
@@ -231,16 +230,17 @@ function Ledger({ initial, email }: { initial: Book; email: string }) {
               onBlur={() => { const iso = parseDateInput(dateStr, yy); if (iso) setDateStr(iso); }}
               placeholder="8/3 또는 2026-08-03"
             />
-            <button type="button" className="cal" aria-label="달력에서 선택" onClick={() => {
-              const el = dpRef.current;
-              if (!el) return;
-              if (typeof el.showPicker === 'function') el.showPicker(); else el.click();
-            }}>📅</button>
-            <input
-              ref={dpRef} type="date" className="hidden-date" tabIndex={-1} aria-hidden
-              value={parseDateInput(dateStr, yy) ?? ''}
-              onChange={e => setDateStr(e.target.value)}
-            />
+            {/* 달력은 date input을 아이콘 위에 투명하게 덮어서 연다.
+                모바일은 showPicker()가 없거나 막혀 있어 자바스크립트로는 못 열고,
+                사용자가 date input을 직접 눌러야 OS 달력이 뜬다 */}
+            <span className="cal">
+              <span aria-hidden="true">📅</span>
+              <input
+                type="date" aria-label="달력에서 날짜 선택"
+                value={parseDateInput(dateStr, yy) ?? ''}
+                onChange={e => setDateStr(e.target.value)}
+              />
+            </span>
           </span>
         </label>
         <label>소비처
